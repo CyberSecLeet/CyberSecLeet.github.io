@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        #certificate-details {
+            display: none;
+            margin-top: 20px;
+        }
+        .toast {
+            visibility: hidden;
+            max-width: 50%;
+            height: 50px;
+            margin: auto;
+            background-color: red;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            position: fixed;
+            z-index: 1;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            font-size: 17px;
+        }
+        .toast.show {
+            visibility: visible;
+        }
+        .certificate-canvas {
+            border: 2px solid black;
+            width: 800px;
+            height: 600px;
+            margin: 20px auto;
+            background-color: purple;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Certificate Verification</h1>
+        <input type="text" id="certificateNumber" placeholder="Enter Certificate Number" />
+        <button onclick="verifyCertificate()">Verify</button>
+
+        <div id="certificate-details">
+            <div class="certificate-canvas">
+                <canvas id="canvas" width="800" height="600"></canvas>
+            </div>
+            <button onclick="downloadCertificate()">Download Certificate</button>
+            <button onclick="shareToLinkedIn()">Share to LinkedIn</button>
+        </div>
+        
+        <div id="toast" class="toast">Certificate not found</div>
+    </div>
+
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 3000);
+        }
+
+        function formatDate(dateString) {
+            const year = "20" + dateString.substring(0, 2);
+            const month = dateString.substring(2, 4);
+            const day = dateString.substring(4, 6);
+            const months = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            const dayNumber = parseInt(day, 10);
+            let daySuffix;
+            if (dayNumber >= 1 && dayNumber <= 30) {
+                if (dayNumber % 10 === 1 && dayNumber !== 11) {
+                    daySuffix = 'st';
+                } else if (dayNumber % 10 === 2 && dayNumber !== 12) {
+                    daySuffix = 'nd';
+                } else if (dayNumber % 10 === 3 && dayNumber !== 13) {
+                    daySuffix = 'rd';
+                } else {
+                    daySuffix = 'th';
+                }
+            } else {
+                daySuffix = 'th';
+            }
+
+            return `${dayNumber}${daySuffix} ${months[parseInt(month, 10) - 1]}, ${year}`;
+        }
+
+        async function verifyCertificate() {
+            const certNumber = document.getElementById("certificateNumber").value.trim();
+            if (certNumber.length !== 18) {
+                showToast("Invalid certificate number");
+                return;
+            }
+
+            const fileName = certNumber.substring(0, 11) + '.lst';
+            const fileUrl = `https://raw.githubusercontent.com/CyberSecLeet/certificates/main/${fileName}`;
+
+            try {
+                const response = await fetch(fileUrl);
+                if (!response.ok) {
+                    showToast("File not found");
+                    return;
+                }
+                const text = await response.text();
+                const certDetails = text.split('\n').find(line => line.startsWith(certNumber));
+
+                if (!certDetails) {
+                    showToast("Certificate not found");
+                } else {
+                    const detailsArray = certDetails.split(', ');
+                    const dateOfCert = formatDate(certNumber.substring(9, 15));
+                    const expireYear = detailsArray[1];
+                    const expireDate = formatDate(
+                        (parseInt(certNumber.substring(9, 11), 10) + parseInt(expireYear, 10)).toString().padStart(2, '0') +
+                        certNumber.substring(11, 15)
+                    );
+
+					// Cert Name Function Comes here            
+					let NameCert1 = "";
+					let NameCert2 = "";
+					let gradientColor = "";
+
+					if (certNumber.substring(0, 6) === "EHE050") {
+						NameCert1 = "Ethical Hacking Expert";
+						NameCert2 = "EHE50 Theory";
+						gradientColor = "linear-gradient(to right, #ff7e5f, #feb47b)"; // Example gradient color for EHE050
+					} else if (certNumber.substring(0, 6) === "PEN050") {
+						NameCert1 = "Penetration Testing Expert";
+						NameCert2 = "PEN50 Theory";
+						gradientColor = "linear-gradient(to right, #00c6ff, #0072ff)"; // Example gradient color for PEN050
+					} else {
+						NameCert1 = "Unknown Certificate";
+						NameCert2 = "Unknown Category";
+						gradientColor = "linear-gradient(to right, #e0eafc, #cfdef3)"; // Default gradient color
+					}
+
+                    const qrCodeUrl = `data:image/png;base64,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`;
+                    const qrCodeImg = new Image();
+                    qrCodeImg.src = qrCodeUrl;
+
+                    qrCodeImg.onload = () => {
+                        const canvas = document.getElementById("canvas");
+                        const ctx = canvas.getContext("2d");
+                        
+                        
+
+                // Create a gradient background
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, "#100238"); // Deep purple
+                gradient.addColorStop(0.5, "#6d0580"); // Normal purple
+                gradient.addColorStop(1, "#a608c2"); // Light purple
+
+                // Apply the gradient as background
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                        
+                        
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = "white";
+                        ctx.textAlign = "center";
+                        ctx.font = "20px Arial";
+                        ctx.fillText(`Credential Number: ${certNumber}`, canvas.width / 2, 30);
+                        ctx.fillText(`Qualified`, canvas.width / 2, canvas.height / 2 - 200);
+                        ctx.font = "30px Arial";
+                        ctx.fillText(NameCert1, canvas.width / 2, canvas.height / 2 - 150);
+                        ctx.font = "40px Arial";
+                        ctx.fillText(detailsArray[2], canvas.width / 2, canvas.height / 2 - 90);
+                        ctx.font = "20px Arial";
+                        ctx.fillText(`Son of ${detailsArray[3]}`, canvas.width / 2, canvas.height / 2 - 30);
+                        ctx.fillText(`from ${detailsArray[4]}, ${detailsArray[5]}`, canvas.width / 2, canvas.height / 2 - 10);
+                        ctx.fillText(`Certified on`, canvas.width / 2, canvas.height / 2 + 30);
+                        ctx.fillText(dateOfCert, canvas.width / 2, canvas.height / 2 + 50);
+                        ctx.fillText(`Valid till ${expireDate}`, canvas.width / 2, canvas.height - 60);
+                        
+                        ctx.textAlign = "left";
+                        ctx.fillText(NameCert2, 10, canvas.height - 20);
+                        ctx.textAlign = "right";
+                        ctx.fillText(`CyberSecLeet`, canvas.width - 10, canvas.height - 20);
+
+                        // Draw the QR code
+                        ctx.drawImage(qrCodeImg, (canvas.width / 2 - 50), canvas.height - 210, 100, 100);
+                    };
+
+                    document.getElementById("certificate-details").style.display = "block";
+                }
+            } catch (error) {
+                console.error("Error fetching the file:", error);
+                showToast("An error occurred");
+            }
+        }
+
+        function downloadCertificate() {
+            const canvas = document.getElementById("canvas");
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/jpeg");
+            link.download = "certificate.jpg";
+            link.click();
+        }
+
+
+        function shareToLinkedIn() {
+            const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+            window.open(linkedInUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
