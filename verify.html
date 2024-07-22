@@ -10,6 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 20px;
             text-align: center;
+            background-color:black;
         }
         #certificate-details {
             display: none;
@@ -45,18 +46,57 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Certificate Verification</h1>
-        <input type="text" id="certificateNumber" placeholder="Enter Certificate Number" />
-        <button onclick="verifyCertificate()">Verify</button>
+	
+	
+	<style>
+	
+#particles-js canvas {
+    display: block;
+    vertical-align: bottom;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+    -webkit-transition: opacity .8s ease, -webkit-transform 1.4s ease;
+    transition: opacity .8s ease, transform 1.4s ease
+}
 
-        <div id="certificate-details">
-            <div class="certificate-canvas">
-                <canvas id="canvas" width="800" height="600"></canvas>
-            </div>
-            <button onclick="downloadCertificate()">Download Certificate Image</button>
-            <button onclick="downloadCertificatePDF()">Download Certificate PDF</button>
-        </div>
+#particles-js {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -10;
+    top: 0;
+    left: 0;
+    background: #010204;
+}
+</style>
+	<div id="particles-js"></div>
+	
+	
+
+ <div class="container">
+		<h1 style="color: white; font-family: Arial, sans-serif; margin-bottom: 20px;">Certificate Verification</h1>
+			<input type="text" id="certificateNumber" placeholder="Enter Certificate Number" 
+				   style="padding: 10px; border: 1px solid #555; border-radius: 5px; background-color: #333; color: white; width: 300px; font-size: 16px; margin-bottom: 20px;" />
+			<button onclick="verifyCertificate()" 
+					style="padding: 10px 20px; border: none; border-radius: 5px; background-color: #6200ea; color: white; font-size: 16px; cursor: pointer; margin: 5px; transition: background-color 0.3s;">
+				Verify
+			</button>
+				<div id="certificate-details">
+					<div class="certificate-canvas">
+						<canvas id="canvas" width="800" height="600"></canvas>
+					</div>
+			 
+				<button onclick="downloadCertificate()" 
+						style="padding: 10px 20px; border: none; border-radius: 5px; background-color: #018786; color: white; font-size: 16px; cursor: pointer; margin: 5px; transition: background-color 0.3s;">
+					Download Certificate Image
+				</button>
+				<button onclick="downloadCertificatePDF()" 
+						style="padding: 10px 20px; border: none; border-radius: 5px; background-color: #03dac6; color: white; font-size: 16px; cursor: pointer; margin: 5px; transition: background-color 0.3s;">
+					Download Certificate PDF
+				</button>
+			   </div>
         
         <div id="toast" class="toast">Certificate not found</div>
     </div>
@@ -226,5 +266,111 @@ async function downloadCertificatePDF() {
 }
 
     </script>
+    
+    
+    
+    
+  <script src='https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js'></script>
+      <script id="rendered-js" >
+/* ---- particles.js config ---- */
+
+particlesJS("particles-js", {
+  "particles": {
+    "number": {
+      "value": 100,
+      "density": {
+        "enable": true,
+        "value_area": 1000 } },
+
+
+    "color": {
+      "value": ["#aa73ff", "#f8c210", "#83d238", "#33b1f8"] },
+
+
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#fff" },
+
+      "polygon": {
+        "nb_sides": 5 },
+
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100 } },
+
+
+    "opacity": {
+      "value": 0.6,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false } },
+
+
+    "size": {
+      "value": 2,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false } },
+
+
+    "line_linked": {
+      "enable": true,
+      "distance": 120,
+      "color": "#ffffff",
+      "opacity": 0.4,
+      "width": 1 } },
+
+
+  "interactivity": {
+    "detect_on": "window",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab" },
+
+      "onclick": {
+        "enable": false },
+
+      "resize": true },
+
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1 } },
+
+
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 4 },
+
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4 },
+
+      "push": {
+        "particles_nb": 4 },
+
+      "remove": {
+        "particles_nb": 2 } } },
+
+
+
+  "retina_detect": true });
+//#
+    </script>
+
 </body>
 </html>
