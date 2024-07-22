@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate Verification</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,8 +54,8 @@
             <div class="certificate-canvas">
                 <canvas id="canvas" width="800" height="600"></canvas>
             </div>
-            <button onclick="downloadCertificate()">Download Certificate</button>
-            <button onclick="shareToLinkedIn()">Share to LinkedIn</button>
+            <button onclick="downloadCertificate()">Download Certificate Image</button>
+            <button onclick="downloadCertificatePDF()">Download Certificate PDF</button>
         </div>
         
         <div id="toast" class="toast">Certificate not found</div>
@@ -125,7 +126,7 @@
                         (parseInt(certNumber.substring(9, 11), 10) + parseInt(expireYear, 10)).toString().padStart(2, '0') +
                         certNumber.substring(11, 15)
                     );
-
+					const score = detailsArray[6];
 					// Cert Name Function Comes here            
 					let NameCert1 = "";
 					let NameCert2 = "";
@@ -184,6 +185,10 @@
                         ctx.fillText(dateOfCert, canvas.width / 2, canvas.height / 2 + 50);
                         ctx.fillText(`Valid till ${expireDate}`, canvas.width / 2, canvas.height - 60);
                         
+                        
+                        ctx.font = "30px Arial";
+                        ctx.fillText(`Scored ${score}%`, canvas.width / 2, canvas.height - 20);
+                        
                         ctx.textAlign = "left";
                         ctx.fillText(NameCert2, 10, canvas.height - 20);
                         ctx.textAlign = "right";
@@ -209,11 +214,17 @@
             link.click();
         }
 
+async function downloadCertificatePDF() {
+    const { jsPDF } = window.jspdf;
+    const canvas = document.getElementById('canvas');
+    const imgData = canvas.toDataURL('image/jpeg');
 
-        function shareToLinkedIn() {
-            const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
-            window.open(linkedInUrl, '_blank');
-        }
+    const pdf = new jsPDF('l', 'px', 'a4'); // Create a new PDF document
+    pdf.addImage(imgData, 'JPEG', 30, 10, canvas.width/1.4, canvas.height/1.4); // Add the image to the PDF
+
+    pdf.save('certificate.pdf'); // Save the PDF file
+}
+
     </script>
 </body>
 </html>
