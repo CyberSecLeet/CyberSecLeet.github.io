@@ -170,20 +170,30 @@
 					// Cert Name Function Comes here            
 					let NameCert1 = "";
 					let NameCert2 = "";
-					let gradientColor = "";
+					let gradientColor = "";										
+					let color1 = "#000000";
+					let color2 = "#000000";
+					let color3 = "#000000";
 
 					if (certNumber.substring(0, 6) === "EHE050") {
 						NameCert1 = "Ethical Hacking Expert";
-						NameCert2 = "EHE50 Theory";
-						gradientColor = "linear-gradient(to right, #ff7e5f, #feb47b)"; // Example gradient color for EHE050
-					} else if (certNumber.substring(0, 6) === "PEN050") {
+						NameCert2 = "EHE050 Theory";									
+						color1 = "#100238";
+						color2 = "#6d0580";
+						color3 = "#a608c2";
+
+					} else if (certNumber.substring(0, 6) === "PEX050") {
 						NameCert1 = "Penetration Testing Expert";
-						NameCert2 = "PEN50 Theory";
-						gradientColor = "linear-gradient(to right, #00c6ff, #0072ff)"; // Example gradient color for PEN050
+						NameCert2 = "PEX050 Practical";							
+						color1 = "#011536";
+						color2 = "#012e75";
+						color3 = "#0247b5";
 					} else {
 						NameCert1 = "Unknown Certificate";
-						NameCert2 = "Unknown Category";
-						gradientColor = "linear-gradient(to right, #e0eafc, #cfdef3)"; // Default gradient color
+						NameCert2 = "Unknown Category";							
+						color1 = "#000";
+						color2 = "#000";
+						color3 = "#000";
 					}
 
                     const qrCodeUrl = `data:image/png;base64,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`;
@@ -196,11 +206,12 @@
                         
                         
 
-                // Create a gradient background
-                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                gradient.addColorStop(0, "#100238"); // Deep purple
-                gradient.addColorStop(0.5, "#6d0580"); // Normal purple
-                gradient.addColorStop(1, "#a608c2"); // Light purple
+				// Create a gradient background
+				const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+				gradient.addColorStop(0, color1);
+				gradient.addColorStop(0.5, color2); 
+				gradient.addColorStop(1, color3); 
+
 
                 // Apply the gradient as background
                 ctx.fillStyle = gradient;
